@@ -1,3 +1,5 @@
+![design_pattern_cover](design_pattern_cover.png)
+
 - by Erich Gamma, one of GoF(gang of four) authors
 
 ## [[Creational Patterns]]
