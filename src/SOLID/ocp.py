@@ -19,7 +19,7 @@ class Pet:
         self.species = species
         self.character = character
     def __str__(self):
-        return f"{self.name} is a {self.character} {self.species}"
+        return f"{self.name} is a {self.character.name.lower()} {self.species.name.lower()}"
     def __format__(self, indent):
         indent = int(indent) if indent else 0
         return f"{' '*indent}{self.__str__()}"
