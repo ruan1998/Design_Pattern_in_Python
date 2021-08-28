@@ -2,6 +2,10 @@ from collections import Counter
 from string import ascii_lowercase as alphabet
 import matplotlib.pyplot as plt
 
+# SRP = Single Responsible Principle
+# Code Reuse Rate
+# Maintenance Difficulty
+
 class CharCounter(Counter):
     def load(self, content):
         self.update(content)
