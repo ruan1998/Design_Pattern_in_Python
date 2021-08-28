@@ -41,7 +41,7 @@ class PetFilter:
 
 # 2 -> 2 ** 2 - 1 = 3
 # 3 -> 2 ** 3 - 1 = 7
-# Specification
+# Specifications
 class Specification(ABC):
     @abstractmethod
     def is_satisfied(self, pet):

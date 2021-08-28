@@ -1,4 +1,4 @@
-![design_pattern_cover](design_pattern_cover.png)
+![design pattern cover](design_pattern_cover.png)
 
 - by Erich Gamma, one of GoF(gang of four) authors
 
@@ -17,3 +17,9 @@
 - solve particular problem
 - solve in particular way
 - behave particular set of concern
+
+
+## Reference
+- SOLID
+    - SRP
+        - [letters' frequency plot](http://pi.math.cornell.edu/~mec/2003-2004/cryptography/subs/frequencies.html)

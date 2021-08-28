@@ -1,47 +1,51 @@
-class Journal:
-    def __init__(self):
-        self.entries = []
-        self.count = 0
+from collections import Counter
+from string import ascii_lowercase as alphabet
+import matplotlib.pyplot as plt
 
-    def add_entry(self, text):
-        self.entries.append(f"{self.count}: {text}")
-        self.count += 1
+class CharCounter(Counter):
+    def load(self, content):
+        self.update(content)
 
-    def remove_entry(self, pos):
-        del self.entries[pos]
+    @property
+    def alphabet_count(self):
+        return {letter: self[letter] for letter in alphabet}
 
-    def __str__(self):
-        return "\n".join(self.entries)
+    @property
+    def alphabet_freq(self):
+        total = sum(self.alphabet_count.values())
+        return {letter:  round(freq/ total, 3) 
+                for letter, freq in self.alphabet_count.items()}
 
-    # break SRP
-    def save(self, filename):
-        file = open(filename, "w")
-        file.write(str(self))
-        file.close()
+class FileManager:
+    @staticmethod
+    def load(path):
+        with open(path, 'r', encoding="utf-8") as file:
+            content = file.read().lower()
+        return content
 
-    def load(self, filename):
+    @staticmethod
+    def save(content, file_path):
         pass
 
-    def load_from_web(self, uri):
-        pass
+class DictSorter:
+    @staticmethod
+    def by_value(dict_obj):
+        return dict(sorted(dict_obj.items(), key=lambda row:row[1]))
 
+if __name__ == '__main__':
+    novel_path = "../data/txt/The_mysterious_island.txt"
+    content = FileManager.load(novel_path)
+    cc = CharCounter()
+    cc.load(content)
+    # print(cc.most_common(20))
+    # print(cc.alphabet_count)
 
-class PersistenceManager:
-    def save_to_file(journal, filename):
-        file = open(filename, "w")
-        file.write(str(journal))
-        file.close()
+    letters, pcts = cc.alphabet_freq.keys(), cc.alphabet_freq.values()
 
+    plt.figure(figsize=(8, 2))
+    plt.subplot(121)
+    plt.bar(letters, pcts)
 
-j = Journal()
-j.add_entry("I cried today.")
-j.add_entry("I ate a bug.")
-print(f"Journal entries:\n{j}\n")
-
-p = PersistenceManager()
-file = r'c:\temp\journal.txt'
-p.save_to_file(j, file)
-
-# verify!
-with open(file) as fh:
-    print(fh.read())
+    plt.subplot(122)
+    plt.bar(*list(zip(*DictSorter.by_value(cc.alphabet_freq).items())))
+    plt.show()
