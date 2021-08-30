@@ -1,54 +1,70 @@
-class Rectangle:
-    def __init__(self, width, height):
-        self._height = height
-        self._width = width
+from abc import ABC, abstractmethod
+
+class BaseHuman(ABC):
+    def __init__(self, hp=100):
+        self._hp = hp
 
     @property
-    def area(self):
-        return self._width * self._height
+    def hp(self):
+        return self._hp
+    @abstractmethod
+    def be_attacted(self, demage):
+        pass
 
-    def __str__(self):
-        return f'Width: {self.width}, height: {self.height}'
-
+class ChangableState(ABC):
     @property
-    def width(self):
-        return self._width
+    def state(self):
+        return self._state
+    @state.setter
+    def state(self, state):
+        self._state_setter(state)
+    @abstractmethod
+    def _state_setter(self, state):
+        pass
 
-    @width.setter
-    def width(self, value):
-        self._width = value
+class Human(BaseHuman):
 
-    @property
-    def height(self):
-        return self._height
+    def __init__(self, hp=100):
+        super().__init__(hp)
+    def be_attacted(self, demage):
+        self._hp -= demage
 
-    @height.setter
-    def height(self, value):
-        self._height = value
+class Giant(BaseHuman, ChangableState):
+    GIANT_STATE = "giant"
+    HUMAN_STATE = "human"
+    def __init__(self, hp=100, giant_hp=10000):
+        super().__init__(hp)
+        self._giant_hp = giant_hp
+        self._state = self.HUMAN_STATE
+    def be_attacted(self, demage):
+        if self.state == self.HUMAN_STATE:
+            self.state = self.GIANT_STATE
+        self._hp -= demage
+    def _state_setter(self, state):
+        if state == self.GIANT_STATE:
+            self._hp = self._giant_hp
+        self._state = state
 
+# LSP = Liskov Substitution Principle
+# Human 正常人
+# Giant 巨人 不正常的人
+# 一个巨人 是不是 一个正常人？
+def _attack_he(he:Human):
+    hp = he.hp
+    he.be_attacted(3)
+    print(f"Expected to get hp {hp - 3}, got {he.hp}")
 
-class Square(Rectangle):
-    def __init__(self, size):
-        Rectangle.__init__(self, size, size)
+def attack_he(he:BaseHuman):
+    if isinstance(he, ChangableState):
+        he.state = he.GIANT_STATE
+    _attack_he(he)
 
-    @Rectangle.width.setter
-    def width(self, value):
-        _width = _height = value
+if __name__ == "__main__":
+    print("For Human:")
+    he = Human()
+    attack_he(he)
 
-    @Rectangle.height.setter
-    def height(self, value):
-        _width = _height = value
+    print("For Giant:")
+    giant = Giant()
+    attack_he(giant)
 
-
-def use_it(rc):
-    w = rc.width
-    rc.height = 10  # unpleasant side effect
-    expected = int(w * 10)
-    print(f'Expected an area of {expected}, got {rc.area}')
-
-
-rc = Rectangle(2, 3)
-use_it(rc)
-
-sq = Square(5)
-use_it(sq)
